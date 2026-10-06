@@ -156,3 +156,34 @@ app.post("/lancamentos", (req, res) => {
 
     res.status(201).json(novoLancamento);
 });
+app.get("/extrato", (req, res) => {
+
+    const usuarioId = parseInt(req.query.usuarioId);
+
+    const resultado = lancamentos.filter(
+        l => l.usuarioId === usuarioId
+    );
+
+    res.json(resultado);
+});
+
+app.get("/contas/:id/saldo", (req, res) => {
+
+    const id = parseInt(req.params.id);
+
+    const conta = contas.find(c => c.id === id);
+
+    if (!conta) {
+        return res.status(404).json({
+            erro: "Conta não encontrada"
+        });
+    }
+
+    res.json({
+        saldo: conta.saldo
+    });
+});
+
+app.listen(PORT, () => {
+    console.log("Servidor rodando na porta 3000");
+});
