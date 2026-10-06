@@ -43,3 +43,38 @@ app.get("/usuarios/:id", (req, res) => {
 
     res.json(usuario);
 });
+let contas = [
+    { id: 1, usuarioId: 1, nome: "Conta principal", saldo: 1000 },
+    { id: 2, usuarioId: 2, nome: "Conta principal", saldo: 500 }
+];
+
+app.get("/contas", (req, res) => {
+    res.json(contas);
+});
+
+app.post("/contas", (req, res) => {
+    const novaConta = {
+        id: contas.length + 1,
+        usuarioId: req.body.usuarioId,
+        nome: req.body.nome,
+        saldo: req.body.saldo
+    };
+
+    contas.push(novaConta);
+
+    res.status(201).json(novaConta);
+});
+
+app.get("/contas/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const conta = contas.find(c => c.id === id);
+
+    if (!conta) {
+        return res.status(404).json({
+            erro: "Conta não encontrada"
+        });
+    }
+
+    res.json(conta);
+});
