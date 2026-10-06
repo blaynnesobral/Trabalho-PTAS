@@ -112,3 +112,47 @@ app.get("/categorias/:id", (req, res) => {
 
     res.json(categoria);
 });
+let lancamentos = [
+    {
+        id: 1,
+        usuarioId: 1,
+        contaId: 1,
+        categoriaId: 3,
+        descricao: "Salário",
+        valor: 2000,
+        tipo: "receita",
+        data: "2026-10-01"
+    }
+];
+
+app.get("/lancamentos", (req, res) => {
+    res.json(lancamentos);
+});
+
+app.post("/lancamentos", (req, res) => {
+
+    const novoLancamento = {
+        id: lancamentos.length + 1,
+        usuarioId: req.body.usuarioId,
+        contaId: req.body.contaId,
+        categoriaId: req.body.categoriaId,
+        descricao: req.body.descricao,
+        valor: req.body.valor,
+        tipo: req.body.tipo,
+        data: req.body.data
+    };
+
+    lancamentos.push(novoLancamento);
+
+    // Se for receita, aumenta o saldo
+    if (novoLancamento.tipo === "receita") {
+        contas[novoLancamento.contaId - 1].saldo += novoLancamento.valor;
+    }
+
+    // Se for despesa, diminui o saldo
+    if (novoLancamento.tipo === "despesa") {
+        contas[novoLancamento.contaId - 1].saldo -= novoLancamento.valor;
+    }
+
+    res.status(201).json(novoLancamento);
+});
