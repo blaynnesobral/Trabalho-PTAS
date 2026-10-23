@@ -1,3 +1,4 @@
+
 const express = require("express");
 
 const app = express();
@@ -43,6 +44,7 @@ app.get("/usuarios/:id", (req, res) => {
 
     res.json(usuario);
 });
+
 let contas = [
     { id: 1, usuarioId: 1, nome: "Conta principal", saldo: 1000 },
     { id: 2, usuarioId: 2, nome: "Conta principal", saldo: 500 }
@@ -78,6 +80,7 @@ app.get("/contas/:id", (req, res) => {
 
     res.json(conta);
 });
+
 let categorias = [
     { id: 1, nome: "Alimentação" },
     { id: 2, nome: "Transporte" },
@@ -112,6 +115,7 @@ app.get("/categorias/:id", (req, res) => {
 
     res.json(categoria);
 });
+
 let lancamentos = [
     {
         id: 1,
@@ -131,6 +135,40 @@ app.get("/lancamentos", (req, res) => {
 
 app.post("/lancamentos", (req, res) => {
 
+    // Validação dos dados do lançamento
+    if (
+        !req.body.usuarioId ||
+        !req.body.contaId ||
+        !req.body.categoriaId ||
+        typeof req.body.descricao !== "string" ||
+        !req.body.descricao.trim() ||
+        typeof req.body.valor !== "number" ||
+        !Number.isFinite(req.body.valor) ||
+        req.body.valor <= 0 ||
+        !["receita", "despesa"].includes(req.body.tipo) ||
+        typeof req.body.data !== "string" ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(req.body.data) ||
+        Number.isNaN(Date.parse(req.body.data)) ||
+        new Date(req.body.data).toISOString().slice(0, 10) !== req.body.data
+    ) {
+        return res.status(400).json({
+            erro: "Dados do lançamento inválidos"
+        });
+    }
+
+    const conta = contas.find(c => c.id === req.body.contaId);
+
+    if (
+        !usuarios.some(u => u.id === req.body.usuarioId) ||
+        !conta ||
+        conta.usuarioId !== req.body.usuarioId ||
+        !categorias.some(c => c.id === req.body.categoriaId)
+    ) {
+        return res.status(400).json({
+            erro: "Usuário, conta ou categoria inválidos"
+        });
+    }
+
     const novoLancamento = {
         id: lancamentos.length + 1,
         usuarioId: req.body.usuarioId,
@@ -146,16 +184,17 @@ app.post("/lancamentos", (req, res) => {
 
     // Se for receita, aumenta o saldo
     if (novoLancamento.tipo === "receita") {
-        contas[novoLancamento.contaId - 1].saldo += novoLancamento.valor;
+        conta.saldo += novoLancamento.valor;
     }
 
     // Se for despesa, diminui o saldo
     if (novoLancamento.tipo === "despesa") {
-        contas[novoLancamento.contaId - 1].saldo -= novoLancamento.valor;
+        conta.saldo -= novoLancamento.valor;
     }
 
     res.status(201).json(novoLancamento);
 });
+
 app.get("/extrato", (req, res) => {
 
     const usuarioId = parseInt(req.query.usuarioId);
