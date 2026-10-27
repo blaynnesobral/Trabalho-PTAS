@@ -13,15 +13,14 @@ export function listar() {
 }
 
 export function criar({ nome }) {
-  if (typeof nome !== 'string' || titulo.trim().length < 3) {
-    throw new ErroDeValidacao('O título deve ter ao menos 3 caracteres.');
+  if (typeof nome !== 'string' || usuarios.trim().length < 3) {
+    throw new ErroDeValidacao('O nome deve ter ao menos 3 caracteres.');
   }
- 
+
+  if (typeof email !== 'string' || usuarios.trim().length < 3) {
+    throw new ErroDeValidacao('E-mail inválido!.');
+  }
    const usuarios = { id: proximoId++, nome: nome.trim(), email: email.trim() };
   usuarios.push(usuarios);
   return usuarios;
 }
-let usuarios = [
-    { id: 1, nome: "João", email: "joao@gmail.com" },
-    { id: 2, nome: "Maria", email: "maria@gmail.com" }
-];
