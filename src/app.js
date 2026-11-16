@@ -226,3 +226,18 @@ app.get("/contas/:id/saldo", (req, res) => {
 app.listen(PORT, () => {
     console.log("Servidor rodando na porta 3000");
 });
+
+import express from 'express';
+import categoriasRoutes from './routes/categorias.routes.js';
+import contasRoutes from './routes/contas.routes.js';
+import lancamentosRoutes from './routes/lancamentos.routes.js';
+import tarefasRoutes from './routes/usuarios.routes.js';
+
+const app = express();
+
+app.use(express.json());
+app.use('/categorias', categoriasRoutes);
+app.use('/contas', contasRoutes);
+app.use('/contas', contasRoutes);
+app.use('/contas', contasRoutes);
+export default app;
