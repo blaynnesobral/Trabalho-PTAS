@@ -32,3 +32,5 @@ export async function buscarPorId(req, res) {
         res.status(500).json({ erro: 'Erro ao buscar lancamento.' });
     }
 }
+//atualizar e remover
+
