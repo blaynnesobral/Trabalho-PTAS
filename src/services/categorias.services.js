@@ -21,3 +21,32 @@ export function criar({ nome }) {
   categoria.push(categoria);
   return categoria;
 }
+export function buscarPorId(id) {
+  const categoriaEncontrada = categoria.find(c => c.id === Number(id));
+
+  if (!categoriaEncontrada) {
+    throw new ErroDeValidacao('Categoria não encontrada.');
+  }
+
+  return categoriaEncontrada;
+}
+
+export function atualizar(id, { nome }) {
+  const categoriaEncontrada = buscarPorId(id);
+
+  if (typeof nome !== 'string' || nome.trim().length < 3) {
+    throw new ErroDeValidacao('O nome deve ter ao menos 3 caracteres.');
+  }
+
+  categoriaEncontrada.nome = nome.trim();
+  return categoriaEncontrada;
+}
+
+export function remover(id) {
+  const categoriaEncontrada = buscarPorId(id);
+
+  const indice = categoria.indexOf(categoriaEncontrada);
+  categoria.splice(indice, 1);
+
+  return categoriaEncontrada;
+}
