@@ -34,3 +34,32 @@ export async function criar({ lancamentos }) {
   const insertedId = await model.inserir(novaTarefa);
   return paraFormatoDaApi({ _id: insertedId, ...novaTarefa });
 }
+export async function buscarPorId(id) {
+  const documento = await model.buscarPorId(id);
+
+  if (!documento) {
+    throw new ErroDeValidacao('Lançamento não encontrado!.');
+  }
+
+  return paraLancamento(documento);
+}
+
+export async function atualizar(id, dados) {
+  const documento = await model.atualizar(id, dados);
+
+  if (!documento) {
+    throw new ErroDeValidacao('Lançamento não encontrado!.');
+  }
+
+  return paraLancamento(documento);
+}
+
+export async function remover(id) {
+  const documento = await model.remover(id);
+
+  if (!documento) {
+    throw new ErroDeValidacao('Lançamento não encontrado!.');
+  }
+
+  return documento;
+}
