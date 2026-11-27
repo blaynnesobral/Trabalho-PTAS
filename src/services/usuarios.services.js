@@ -24,3 +24,23 @@ export function criar({ nome }) {
   usuarios.push(usuarios);
   return usuarios;
 }
+export function atualizar(id, dados) {
+  const usuarioEncontrado = buscarPorId(id);
+
+  if (!usuarioEncontrado) {
+    throw new ErroDeValidacao('Usuário não encontrado!.');
+  }
+
+  Object.assign(usuarioEncontrado, dados);
+  return usuarioEncontrado;
+}
+
+export function remover(id) {
+  const indice = usuarios.findIndex(u => u.id === Number(id));
+
+  if (indice === -1) {
+    throw new ErroDeValidacao('Usuário não encontrado!.');
+  }
+
+  return usuarios.splice(indice, 1);
+}
