@@ -33,4 +33,25 @@ export async function buscarPorId(req, res) {
     }
 }
 //atualizar e remover
+export async function atualizar(req, res) {
+    try {
+        res.json(await servico.atualizar(req.params.id, req.body ?? {}));
+    } catch (erro) {
+        if (erro instanceof ErroDeValidacao) {
+            return res.status(400).json({ erro: erro.message });
+        }
 
+        console.error(erro);
+        res.status(500).json({ erro: 'Erro ao atualizar lancamento.' });
+    }
+}
+
+export async function remover(req, res) {
+    try {
+        await servico.remover(req.params.id);
+        res.status(204).send();
+    } catch (erro) {
+        console.error(erro);
+        res.status(500).json({ erro: 'Erro ao remover lancamento.' });
+    }
+}
